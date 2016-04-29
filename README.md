@@ -26,7 +26,7 @@ Until I build proper packages, do the following:
 
 2. Start Electron
 
-       $ electron hipchat-electron
+        $ electron hipchat-electron
 
 If you don't already have `electron` installed, install it with npm globally:
 
