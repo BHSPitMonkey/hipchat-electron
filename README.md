@@ -20,9 +20,9 @@ Until I build proper packages, do the following:
 
 1. Checkout this repository and install dependencies
 
-       $ git checkout https://github.com/BHSPitMonkey/hipchat-electron
-       $ cd hipchat-electron
-       $ npm install
+        $ git checkout https://github.com/BHSPitMonkey/hipchat-electron
+        $ cd hipchat-electron
+        $ npm install
 
 2. Start Electron
 
