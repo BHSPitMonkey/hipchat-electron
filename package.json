@@ -1,0 +1,10 @@
+{
+  "name": "hipchat-electron",
+  "productName": "HipChat Electron",
+  "version": "0.1.0",
+  "main": "main.js",
+  "dependencies": {
+    "electron-json-storage": "^2.0.0",
+    "open": "0.0.5"
+  }
+}
