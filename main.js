@@ -15,11 +15,19 @@ const DEFAULT_CHAT_URL = "https://www.hipchat.com/chat";
 var mainWindow = null;
 var appIcon = null;
 var prefs = {};
+var forceQuit = false;
 
+// Save current contents of prefs to disk
 function persistPrefs() {
   storage.set('prefs', prefs, function(error) {
     if (error) console.log("Couldn't persist prefs due to storage error: ", error);
   });
+}
+
+// Actually quit the app (just calling app.quit() gets thwarted by our window close handler)
+function quit() {
+  forceQuit = true;
+  app.quit();
 }
 
 // Quit when all windows are closed.
@@ -27,7 +35,7 @@ app.on('window-all-closed', function() {
   // On OS X it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
   if (process.platform != 'darwin') {
-    app.quit();
+    quit();
   }
 });
 
@@ -72,8 +80,10 @@ app.on('ready', function() {
 
     // Prevent closing the window (only hide it)
     mainWindow.on('close', function (event) {
-      event.preventDefault();
-      mainWindow.hide();
+      if (!forceQuit) {
+        event.preventDefault();
+        mainWindow.hide();
+      }
     });
 
     // Handle resize events and save to prefs
@@ -96,7 +106,7 @@ app.on('ready', function() {
     //   {
     //     label: "HipChat",
     //     submenu: [
-    //       { label: "Quit", click: function() { app.quit(); } }
+    //       { label: "Quit", click: function() { quit(); } }
     //     ]
     //   },
     //   {
@@ -146,14 +156,14 @@ app.on('ready', function() {
     // Set up tray icon
     appIcon = new Tray('images/32x32/hipchat-mono.png'); // TODO: Use different icon for each OS
     var contextMenu = Menu.buildFromTemplate([
-      { label: 'Show HipChat', type: 'normal', click: function() { mainWindow.show(); } },
+      { label: 'Show HipChat', type: 'normal', click: function() { mainWindow.show(); mainWindow.focus(); } },
       //{ type: 'separator' }, // TODO: Figure these actions out
       //{ label: 'Join Chat', type: 'normal' },
       //{ type: 'separator' },
       //{ label: 'Settings', type: 'normal' },
       { type: 'separator' },
       { label: 'Logout', type: 'normal', click: function() { logOut(); } },
-      { label: 'Quit HipChat', type: 'normal', click: function() { app.quit(); } },
+      { label: 'Quit HipChat', type: 'normal', click: function() { quit(); } },
     ]);
     appIcon.setToolTip('HipChat');
     appIcon.setContextMenu(contextMenu);
