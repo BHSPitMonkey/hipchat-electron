@@ -8,10 +8,11 @@ This client is unofficial and not affiliated with HipChat or Atlassian.
 
 - Remembers which HipChat instance you use
 - Opens links in your default browser
+- Minimizes to a tray icon
+- Desktop notifications
 
 ## Known Issues
 
-- No support for pasting images from clipboard yet
 - No zoom controls yet (can be set manually by adding a 'zoom' key in prefs.json)
 
 ## Usage
@@ -26,7 +27,7 @@ Until I build proper packages, do the following:
 
 2. Start Electron
 
-        $ electron hipchat-electron
+        $ electron .
 
 If you don't already have `electron` installed, install it with npm globally:
 
