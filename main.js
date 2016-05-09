@@ -7,6 +7,7 @@ const app = electron.app;  // Module to control application life.
 const BrowserWindow = electron.BrowserWindow;  // Module to create native browser window.
 const Menu = electron.Menu;
 const Tray = electron.Tray;
+const dialog = electron.dialog;
 
 const DEFAULT_CHAT_URL = "https://www.hipchat.com/chat";
 
@@ -51,6 +52,31 @@ app.on('ready', function() {
       mainWindow.webContents.session.clearStorageData({}, function() { mainWindow.loadURL(DEFAULT_CHAT_URL); });
       delete prefs['custom_chat_url'];
       persistPrefs();
+    }
+
+    // Adjust main window zoom level. Mode should be 1 to zoom in, 0 to reset, or -1 to zoom out.
+    function zoom(mode) {
+        if (!prefs['zoom']) {
+            prefs['zoom'] = 1.0;
+        }
+
+        // Modify zoom
+        if (mode == 0) {
+            prefs['zoom'] = 1.0;
+        } else {
+            prefs['zoom'] += (mode * 0.2);
+        }
+
+        // Modify mainWindow zoom to newZoom
+        // TODO: Communicate this to the renderer process and use webFrame.setZoomFactor
+        dialog.showMessageBox(null, {
+            type: "info",
+            title: "Zoom level changed",
+            message: "Zoom level will be " + (prefs['zoom']).toFixed(1) + " after restart.",
+            buttons: ["Okay"],
+        });
+
+        persistPrefs();
     }
 
     // Get display info
@@ -102,20 +128,112 @@ app.on('ready', function() {
       persistPrefs();
     });
 
-    // mainWindow.setMenu(Menu.buildFromTemplate([
-    //   {
-    //     label: "HipChat",
-    //     submenu: [
-    //       { label: "Quit", click: function() { quit(); } }
-    //     ]
-    //   },
-    //   {
-    //     label: "View",
-    //     submenu: [
-    //       { label: "Zoom In", click: function() {  } }
-    //     ]
-    //   }
-    // ]);
+    mainWindow.setMenu(Menu.buildFromTemplate([
+      {
+        label: "HipChat",
+        submenu: [
+            { label: "Logout", click: function() { logOut(); } },
+            { label: "Quit", click: function() { quit(); } },
+        ]
+      },
+      {
+        label: 'Edit',
+        submenu: [
+          {
+            label: 'Undo',
+            accelerator: 'CmdOrCtrl+Z',
+            role: 'undo'
+          },
+          {
+            label: 'Redo',
+            accelerator: 'Shift+CmdOrCtrl+Z',
+            role: 'redo'
+          },
+          {
+            type: 'separator'
+          },
+          {
+            label: 'Cut',
+            accelerator: 'CmdOrCtrl+X',
+            role: 'cut'
+          },
+          {
+            label: 'Copy',
+            accelerator: 'CmdOrCtrl+C',
+            role: 'copy'
+          },
+          {
+            label: 'Paste',
+            accelerator: 'CmdOrCtrl+V',
+            role: 'paste'
+          },
+          {
+            label: 'Select All',
+            accelerator: 'CmdOrCtrl+A',
+            role: 'selectall'
+          },
+        ]
+      },
+      {
+        label: 'View',
+        submenu: [
+          {
+            label: 'Reload',
+            accelerator: 'CmdOrCtrl+R',
+            click: function(item, focusedWindow) {
+              if (focusedWindow)
+                focusedWindow.reload();
+            }
+          },
+          {
+            label: 'Toggle Full Screen',
+            accelerator: (function() {
+              if (process.platform == 'darwin')
+                return 'Ctrl+Command+F';
+              else
+                return 'F11';
+            })(),
+            click: function(item, focusedWindow) {
+              if (focusedWindow)
+                focusedWindow.setFullScreen(!focusedWindow.isFullScreen());
+            }
+          },
+          {
+            label: 'Toggle Developer Tools',
+            accelerator: (function() {
+              if (process.platform == 'darwin')
+                return 'Alt+Command+I';
+              else
+                return 'Ctrl+Shift+I';
+            })(),
+            click: function(item, focusedWindow) {
+              if (focusedWindow)
+                focusedWindow.webContents.toggleDevTools();
+            }
+          },
+          { type: 'separator' },
+          { label: "Zoom In", accelerator: 'CmdOrCtrl+=', click: function() { zoom(1); } },
+          { label: "Zoom Out", accelerator: 'CmdOrCtrl+-', click: function() { zoom(-1); } },
+          { label: "Reset Zoom", accelerator: 'CmdOrCtrl+0', click: function() { zoom(0); } },
+        ]
+      },
+      {
+        label: 'Window',
+        role: 'window',
+        submenu: [
+          {
+            label: 'Minimize',
+            accelerator: 'CmdOrCtrl+M',
+            role: 'minimize'
+          },
+          {
+            label: 'Close',
+            accelerator: 'CmdOrCtrl+W',
+            role: 'close'
+          },
+        ]
+      }
+    ]));
 
     // Intercept 'new-window' event so we can open links in the OS default browser
     mainWindow.webContents.on('new-window', function(event, url) {
