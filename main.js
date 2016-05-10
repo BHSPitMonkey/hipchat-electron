@@ -298,7 +298,11 @@ app.on('ready', function() {
     });
 
     // Set up tray icon
-    appIcon = new Tray('images/32x32/hipchat-mono.png'); // TODO: Use different icon for each OS
+    var iconPath = 'images/64x64/hipchat-color.png';
+    if (process.platform == 'linux') {
+        iconPath = 'images/64x64/hipchat-mono.png'
+    }
+    appIcon = new Tray(iconPath);
     var contextMenu = Menu.buildFromTemplate([
       { label: 'Show HipChat', type: 'normal', click: function() { mainWindow.show(); mainWindow.focus(); } },
       { type: 'separator' },
