@@ -13,7 +13,7 @@ This client is unofficial and not affiliated with HipChat or Atlassian.
 
 ## Known Issues
 
-- No zoom controls yet (can be set manually by adding a 'zoom' key in prefs.json)
+- Not all of HipChat's built-in keyboard shortcuts work yet
 
 ## Usage
 

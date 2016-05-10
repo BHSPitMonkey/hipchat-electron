@@ -8,6 +8,7 @@ const BrowserWindow = electron.BrowserWindow;  // Module to create native browse
 const Menu = electron.Menu;
 const Tray = electron.Tray;
 const dialog = electron.dialog;
+const path = require('path');
 
 const DEFAULT_CHAT_URL = "https://www.hipchat.com/chat";
 
@@ -72,14 +73,8 @@ app.on('ready', function() {
             prefs['zoom'] += (mode * 0.2);
         }
 
-        // Modify mainWindow zoom to newZoom
-        // TODO: Communicate this to the renderer process and use webFrame.setZoomFactor
-        dialog.showMessageBox(null, {
-            type: "info",
-            title: "Zoom level changed",
-            message: "Zoom level will be " + (prefs['zoom']).toFixed(1) + " after restart.",
-            buttons: ["Okay"],
-        });
+        // Tell page to use new zoom factor
+        mainWindow.webContents.send('zoom', prefs['zoom']);
 
         persistPrefs();
     }
@@ -89,6 +84,20 @@ app.on('ready', function() {
         showAndFocusWindow();
         var code = "var t = document.createEvent('HTMLEvents'); t.initEvent('click', true, true); document.getElementById('new_chat_btn').dispatchEvent(t);";
         mainWindow.webContents.executeJavaScript(code, true);
+    }
+    
+    // Send a keyboard event to the page (see Electron Docs: Accelerators for valid keyCode values)
+    function sendKeyboardShortcut(keyCode, ctrlKey, altKey, shiftKey) {
+        showAndFocusWindow();
+        var modifiers = [];
+        if (ctrlKey) modifiers.push('control');
+        if (altKey) modifiers.push('alt');
+        if (shiftKey) modifiers.push('shift');
+        mainWindow.webContents.sendInputEvent({
+            type: 'keyDown',
+            keyCode: keyCode,
+            modifiers: modifiers,
+        });
     }
 
     // Get display info
@@ -108,6 +117,7 @@ app.on('ready', function() {
       webPreferences: {
         zoomFactor: defaultZoom,
         nodeIntegration: false,
+        preload: path.resolve(path.join(__dirname, 'preload.js')),
         allowDisplayingInsecureContent: true,
       }
     };
@@ -147,6 +157,7 @@ app.on('ready', function() {
         submenu: [
             { label: "New Chat", accelerator: 'CmdOrCtrl+N', click: newChat },
             { label: "New Chat", accelerator: 'CmdOrCtrl+J', click: newChat, visible: false },
+            { label: "Invite to Room", click: function() { sendKeyboardShortcut('I', true); } },
             { label: "Logout", click: logOut },
             { label: "Quit", accelerator: 'CmdOrCtrl+Q', click: quit },
         ]
