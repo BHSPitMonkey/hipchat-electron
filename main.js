@@ -48,6 +48,11 @@ app.on('ready', function() {
     if (error) console.log("Could not load prefs from storage:", error, data);
     prefs = data;
 
+    function showAndFocusWindow() {
+        mainWindow.show();
+        mainWindow.focus();
+    }
+
     function logOut() {
       mainWindow.webContents.session.clearStorageData({}, function() { mainWindow.loadURL(DEFAULT_CHAT_URL); });
       delete prefs['custom_chat_url'];
@@ -79,6 +84,13 @@ app.on('ready', function() {
         persistPrefs();
     }
 
+    // Spawn a new chat
+    function newChat() {
+        showAndFocusWindow();
+        var code = "var t = document.createEvent('HTMLEvents'); t.initEvent('click', true, true); document.getElementById('new_chat_btn').dispatchEvent(t);";
+        mainWindow.webContents.executeJavaScript(code, true);
+    }
+
     // Get display info
     var electronScreen = electron.screen;
     var primaryDisplay = electronScreen.getPrimaryDisplay();
@@ -94,8 +106,9 @@ app.on('ready', function() {
       height: defaultHeight,
       icon: 'images/256x256/hipchat.png',
       webPreferences: {
-        zoomFactor: defaultZoom, // TODO: allow CLI override
+        zoomFactor: defaultZoom,
         nodeIntegration: false,
+        allowDisplayingInsecureContent: true,
       }
     };
     if ('windowX' in prefs) windowOptions['x'] = prefs['windowX'];
@@ -132,8 +145,10 @@ app.on('ready', function() {
       {
         label: "HipChat",
         submenu: [
-            { label: "Logout", click: function() { logOut(); } },
-            { label: "Quit", click: function() { quit(); } },
+            { label: "New Chat", accelerator: 'CmdOrCtrl+N', click: newChat },
+            { label: "New Chat", accelerator: 'CmdOrCtrl+J', click: newChat, visible: false },
+            { label: "Logout", click: logOut },
+            { label: "Quit", accelerator: 'CmdOrCtrl+Q', click: quit },
         ]
       },
       {
@@ -275,13 +290,13 @@ app.on('ready', function() {
     appIcon = new Tray('images/32x32/hipchat-mono.png'); // TODO: Use different icon for each OS
     var contextMenu = Menu.buildFromTemplate([
       { label: 'Show HipChat', type: 'normal', click: function() { mainWindow.show(); mainWindow.focus(); } },
-      //{ type: 'separator' }, // TODO: Figure these actions out
-      //{ label: 'Join Chat', type: 'normal' },
-      //{ type: 'separator' },
-      //{ label: 'Settings', type: 'normal' },
       { type: 'separator' },
-      { label: 'Logout', type: 'normal', click: function() { logOut(); } },
-      { label: 'Quit HipChat', type: 'normal', click: function() { quit(); } },
+      { label: 'Join Chat', type: 'normal', click: newChat },
+      { type: 'separator' },
+      //{ label: 'Settings', type: 'normal' }, // TODO: Figure this action out
+      //{ type: 'separator' },
+      { label: 'Logout', type: 'normal', click: logOut },
+      { label: 'Quit HipChat', type: 'normal', click: quit },
     ]);
     appIcon.setToolTip('HipChat');
     appIcon.setContextMenu(contextMenu);
