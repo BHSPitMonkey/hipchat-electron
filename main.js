@@ -79,13 +79,6 @@ app.on('ready', function() {
         persistPrefs();
     }
 
-    // Spawn a new chat
-    function newChat() {
-        showAndFocusWindow();
-        var code = "var t = document.createEvent('HTMLEvents'); t.initEvent('click', true, true); document.getElementById('new_chat_btn').dispatchEvent(t);";
-        mainWindow.webContents.executeJavaScript(code, true);
-    }
-    
     // Send a keyboard event to the page (see Electron Docs: Accelerators for valid keyCode values)
     function sendKeyboardShortcut(keyCode, ctrlKey, altKey, shiftKey) {
         showAndFocusWindow();
@@ -98,6 +91,21 @@ app.on('ready', function() {
             keyCode: keyCode,
             modifiers: modifiers,
         });
+    }
+
+    // Jump to next room containing unread messages, if any
+    function goToUnread() {
+        showAndFocusWindow();
+        var code = "document.querySelector('.hc-unread-scroller a').click();";
+        mainWindow.webContents.executeJavaScript(code, true);
+    }
+
+    // Spawn a new chat
+    function newChat() {
+        showAndFocusWindow();
+        sendKeyboardShortcut('J', true);
+        //var code = "var t = document.createEvent('HTMLEvents'); t.initEvent('click', true, true); document.getElementById('new_chat_btn').dispatchEvent(t);";
+        //mainWindow.webContents.executeJavaScript(code, true);
     }
 
     // Get display info
@@ -157,6 +165,7 @@ app.on('ready', function() {
         submenu: [
             { label: "New Chat", accelerator: 'CmdOrCtrl+N', click: newChat },
             { label: "Invite to Room", click: function() { sendKeyboardShortcut('I', true); } },
+            { label: "Go To Unread Message", accelerator: 'CmdOrCtrl+G', click: goToUnread },
             { label: "Previous Room", visible: false, accelerator: 'CmdOrCtrl+PageUp', click: function() { sendKeyboardShortcut('Up', true, true); } },
             { label: "Next Room", visible: false, accelerator: 'CmdOrCtrl+PageDown', click: function() { sendKeyboardShortcut('Down', true, true); } },
             { type: 'separator' },
