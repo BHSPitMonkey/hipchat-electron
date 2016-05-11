@@ -19,6 +19,7 @@ This client is **unofficial** and not affiliated with HipChat or Atlassian.
 * `Ctrl`+`N`: Start a new chat
 * `Ctrl`+`PgUp`: Navigate up one room
 * `Ctrl`+`PgDn`: Navigate down one room
+* `Ctrl`+`G`: Go to next room with unread messages
 * `Ctrl`+`Q`: Quit application
 
 ## Installation and Usage
