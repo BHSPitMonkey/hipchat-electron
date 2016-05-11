@@ -2,13 +2,13 @@
 
 const electron = require('electron');
 const open = require('open');
+const path = require('path');
 const storage = require('electron-json-storage');
 const app = electron.app;  // Module to control application life.
 const BrowserWindow = electron.BrowserWindow;  // Module to create native browser window.
 const Menu = electron.Menu;
 const Tray = electron.Tray;
 const dialog = electron.dialog;
-const path = require('path');
 
 const DEFAULT_CHAT_URL = "https://www.hipchat.com/chat";
 
@@ -156,8 +156,10 @@ app.on('ready', function() {
         label: "HipChat",
         submenu: [
             { label: "New Chat", accelerator: 'CmdOrCtrl+N', click: newChat },
-            { label: "New Chat", accelerator: 'CmdOrCtrl+J', click: newChat, visible: false },
             { label: "Invite to Room", click: function() { sendKeyboardShortcut('I', true); } },
+            { label: "Previous Room", visible: false, accelerator: 'CmdOrCtrl+PageUp', click: function() { sendKeyboardShortcut('Up', true, true); } },
+            { label: "Next Room", visible: false, accelerator: 'CmdOrCtrl+PageDown', click: function() { sendKeyboardShortcut('Down', true, true); } },
+            { type: 'separator' },
             { label: "Logout", click: logOut },
             { label: "Quit", accelerator: 'CmdOrCtrl+Q', click: quit },
         ]
