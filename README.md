@@ -4,6 +4,8 @@ An Electron wrapper for the HipChat web client.
 
 This client is **unofficial** and not affiliated with HipChat or Atlassian.
 
+![](http://i.imgur.com/8QogqnT.png)
+
 ## Features
 
 - Remembers which HipChat instance you use
