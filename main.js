@@ -309,9 +309,16 @@ app.on('ready', function() {
     });
 
     // Set up tray icon
-    var iconPath = 'images/64x64/hipchat-color.png';
-    if (process.platform == 'linux') {
-        iconPath = 'images/64x64/hipchat-mono.png'
+    var iconPath;
+    switch (process.platform) {
+      case 'linux':
+        iconPath = 'images/64x64/hipchat-mono.png';
+        break;
+      case 'win32':
+        iconPath = 'images/32x32/hipchat.png';
+        break;
+      default:
+        iconPath = 'images/64x64/hipchat-color.png';
     }
     appIcon = new Tray(iconPath);
     var contextMenu = Menu.buildFromTemplate([
