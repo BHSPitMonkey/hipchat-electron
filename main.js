@@ -96,8 +96,7 @@ app.on('ready', function() {
     // Jump to next room containing unread messages, if any
     function goToUnread() {
         showAndFocusWindow();
-        var code = "document.querySelector('.hc-unread-scroller a').click();";
-        mainWindow.webContents.executeJavaScript(code, true);
+        mainWindow.webContents.send('jump-to-unread');
     }
 
     // Spawn a new chat
@@ -167,7 +166,9 @@ app.on('ready', function() {
             { label: "Invite to Room", click: function() { sendKeyboardShortcut('I', true); } },
             { label: "Go To Unread Message", accelerator: 'CmdOrCtrl+G', click: goToUnread },
             { label: "Previous Room", visible: false, accelerator: 'CmdOrCtrl+PageUp', click: function() { sendKeyboardShortcut('Up', true, true); } },
+            { label: "Previous Room", visible: false, accelerator: 'CmdOrCtrl+Shift+Tab', click: function() { sendKeyboardShortcut('Up', true, true); } },
             { label: "Next Room", visible: false, accelerator: 'CmdOrCtrl+PageDown', click: function() { sendKeyboardShortcut('Down', true, true); } },
+            { label: "Next Room", visible: false, accelerator: 'CmdOrCtrl+Tab', click: function() { sendKeyboardShortcut('Down', true, true); } },
             { type: 'separator' },
             { label: "Logout", click: logOut },
             { label: "Quit", accelerator: 'CmdOrCtrl+Q', click: quit },
