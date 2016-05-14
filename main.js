@@ -19,6 +19,13 @@ var appIcon = null;
 var prefs = {};
 var forceQuit = false;
 
+function showAndFocusWindow() {
+    if (mainWindow) {
+        mainWindow.show();
+        mainWindow.focus();
+    }
+}
+
 // Save current contents of prefs to disk
 function persistPrefs() {
   storage.set('prefs', prefs, function(error) {
@@ -48,11 +55,6 @@ app.on('ready', function() {
   storage.get('prefs', function(error, data) {
     if (error) console.log("Could not load prefs from storage:", error, data);
     prefs = data;
-
-    function showAndFocusWindow() {
-        mainWindow.show();
-        mainWindow.focus();
-    }
 
     function logOut() {
       mainWindow.webContents.session.clearStorageData({}, function() { mainWindow.loadURL(DEFAULT_CHAT_URL); });
@@ -103,8 +105,22 @@ app.on('ready', function() {
     function newChat() {
         showAndFocusWindow();
         sendKeyboardShortcut('J', true);
-        //var code = "var t = document.createEvent('HTMLEvents'); t.initEvent('click', true, true); document.getElementById('new_chat_btn').dispatchEvent(t);";
-        //mainWindow.webContents.executeJavaScript(code, true);
+    }
+
+    // If an instance is already running, instruct it to show itself and exit ourself gracefully
+    let shouldQuit = app.makeSingleInstance((argv, workingDirectory) => {
+        showAndFocusWindow();
+
+        // Handle CLI args from the second instance, such as --new-chat
+        if (argv.includes('--new-chat')) {
+            newChat();
+        }
+    });
+
+    if (shouldQuit) {
+        console.log("An instance is already running. Exiting...");
+        quit();
+        return;
     }
 
     // Get display info
@@ -200,11 +216,11 @@ app.on('ready', function() {
             accelerator: 'CmdOrCtrl+C',
             role: 'copy'
           },
-          {
-            label: 'Paste',
-            accelerator: 'CmdOrCtrl+V',
-            role: 'paste'
-          },
+        //   {
+        //     label: 'Paste',
+        //     accelerator: 'CmdOrCtrl+V',
+        //     role: 'paste'
+        //   },
           {
             label: 'Select All',
             accelerator: 'CmdOrCtrl+A',
