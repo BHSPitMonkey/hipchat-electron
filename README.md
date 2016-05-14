@@ -36,7 +36,7 @@ Until I build proper packages, do the following:
 
 2. Start Electron
 
-        $ electron .
+        $ electron app
 
 If you don't already have `electron` installed, install it with npm globally:
 
