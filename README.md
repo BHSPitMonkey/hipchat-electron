@@ -1,5 +1,7 @@
 # HipChat Electron
 
+[![Build Status](https://travis-ci.org/BHSPitMonkey/hipchat-electron.svg?branch=master)](https://travis-ci.org/BHSPitMonkey/hipchat-electron)
+
 An Electron wrapper for the HipChat web client.
 
 This client is **unofficial** and not affiliated with HipChat or Atlassian.
