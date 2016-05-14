@@ -10,6 +10,7 @@
     "dist": "build"
   },
   "devDependencies": {
-    "electron-builder": "next"
+    "electron-builder": "next",
+    "electron-prebuilt": "^1.0.2"
   }
 }
