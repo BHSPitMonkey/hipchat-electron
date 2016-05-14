@@ -6,5 +6,8 @@
   "dependencies": {
     "electron-json-storage": "^2.0.0",
     "open": "0.0.5"
+  },
+  "devDependencies": {
+    "electron-prebuilt": "^1.0.2"
   }
 }

@@ -26,6 +26,16 @@ function showAndFocusWindow() {
     }
 }
 
+function toggleWindowFocus() {
+  if (mainWindow) {
+    if (mainWindow.isVisible()) {
+      mainWindow.hide();
+    } else {
+      showAndFocusWindow();
+    }
+  }
+}
+
 // Save current contents of prefs to disk
 function persistPrefs() {
   storage.set('prefs', prefs, function(error) {
@@ -332,14 +342,14 @@ app.on('ready', function() {
         iconPath = 'images/64x64/hipchat-mono.png';
         break;
       case 'win32':
-        iconPath = 'images/32x32/hipchat.png';
+        iconPath = 'images/16x16/hipchat.png';
         break;
       default:
         iconPath = 'images/64x64/hipchat-color.png';
     }
     appIcon = new Tray(iconPath);
     var contextMenu = Menu.buildFromTemplate([
-      { label: 'Show HipChat', type: 'normal', click: function() { mainWindow.show(); mainWindow.focus(); } },
+      { label: 'Show HipChat', type: 'normal', click: showAndFocusWindow },
       { type: 'separator' },
       { label: 'Join Chat', type: 'normal', click: newChat },
       { type: 'separator' },
@@ -350,5 +360,16 @@ app.on('ready', function() {
     ]);
     appIcon.setToolTip('HipChat');
     appIcon.setContextMenu(contextMenu);
+    appIcon.on('double-click', toggleWindowFocus);
+
+    // Set up Windows app actions
+    app.setUserTasks([{
+      program: process.execPath,
+      arguments: '--new-chat',
+      iconPath: process.execPath,
+      iconIndex: 0,
+      title: 'New Chat',
+      description: 'Join a room or start a private conversation'
+    }]);
   });
 });
