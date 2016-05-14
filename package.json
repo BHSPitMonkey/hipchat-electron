@@ -2,5 +2,10 @@
   "build": {
     "app-bundle-id": "com.stephen.hipchat-electron",
     "app-category-type": "public.app-category.productivity"
+  },
+  "scripts": {
+    "postinstall": "install-app-deps",
+    "pack": "build",
+    "dist": "build"
   }
 }
