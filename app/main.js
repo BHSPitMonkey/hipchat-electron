@@ -146,7 +146,7 @@ app.on('ready', function() {
     var windowOptions = {
       width: defaultWidth,
       height: defaultHeight,
-      icon: 'images/256x256/hipchat.png',
+      icon: path.resolve(path.join(__dirname, 'images/256x256/hipchat.png')),
       webPreferences: {
         zoomFactor: defaultZoom,
         nodeIntegration: false,
