@@ -36,10 +36,6 @@ Until I build proper packages, do the following:
         $ cd hipchat-electron
         $ npm install
 
-2. Start Electron
+2. Start the application
 
-        $ electron app
-
-If you don't already have `electron` installed, install it with npm globally:
-
-    $ npm install -g electron-prebuilt
+        $ npm start

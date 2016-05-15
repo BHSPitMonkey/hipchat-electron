@@ -347,7 +347,7 @@ app.on('ready', function() {
       default:
         iconPath = 'images/64x64/hipchat-color.png';
     }
-    appIcon = new Tray(iconPath);
+    appIcon = new Tray(path.resolve(path.join(__dirname, iconPath)));
     var contextMenu = Menu.buildFromTemplate([
       { label: 'Show HipChat', type: 'normal', click: showAndFocusWindow },
       { type: 'separator' },
@@ -363,13 +363,15 @@ app.on('ready', function() {
     appIcon.on('double-click', toggleWindowFocus);
 
     // Set up Windows app actions
-    app.setUserTasks([{
-      program: process.execPath,
-      arguments: '--new-chat',
-      iconPath: process.execPath,
-      iconIndex: 0,
-      title: 'New Chat',
-      description: 'Join a room or start a private conversation'
-    }]);
+    if (app.hasOwnProperty('setUserTasks')) {
+      app.setUserTasks([{
+        program: process.execPath,
+        arguments: '--new-chat',
+        iconPath: process.execPath,
+        iconIndex: 0,
+        title: 'New Chat',
+        description: 'Join a room or start a private conversation'
+      }]);
+    }
   });
 });

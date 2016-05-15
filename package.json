@@ -7,10 +7,11 @@
   "scripts": {
     "postinstall": "install-app-deps",
     "pack": "build",
-    "dist": "build"
+    "dist": "build",
+    "start": "electron app"
   },
   "devDependencies": {
-    "electron-builder": "next",
+    "electron-builder": "^3.23.0",
     "electron-prebuilt": "^1.0.2"
   }
 }
