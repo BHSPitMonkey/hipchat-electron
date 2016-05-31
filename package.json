@@ -2,7 +2,8 @@
   "private": true,
   "build": {
     "app-bundle-id": "com.stephen.hipchat-electron",
-    "app-category-type": "public.app-category.productivity"
+    "app-category-type": "public.app-category.productivity",
+    "asar": false
   },
   "scripts": {
     "postinstall": "install-app-deps",
