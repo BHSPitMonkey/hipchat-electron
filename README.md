@@ -8,6 +8,10 @@ This client is **unofficial** and not affiliated with HipChat or Atlassian.
 
 ![](http://i.imgur.com/8QogqnT.png)
 
+## Download
+
+Downloads are available on the [Releases](https://github.com/BHSPitMonkey/hipchat-electron/releases) page.
+
 ## Features
 
 - Remembers which HipChat instance you use
@@ -16,9 +20,9 @@ This client is **unofficial** and not affiliated with HipChat or Atlassian.
 - Desktop notifications
 - Enhanced keyboard shortcuts
 
-## Added Keyboard shortcuts
+## Additional keyboard shortcuts
 
-(The ones built into HipChat should work too, except where overridden by your OS)
+(The shortcuts built into HipChat should work too, except when overridden by your OS.)
 
 * `Ctrl`+`N`: Start a new chat
 * `Ctrl`+`PgUp`: Navigate up one room
@@ -26,9 +30,7 @@ This client is **unofficial** and not affiliated with HipChat or Atlassian.
 * `Ctrl`+`G`: Go to next room with unread messages
 * `Ctrl`+`Q`: Quit application
 
-## Installation and Usage
-
-Until I build proper packages, do the following:
+## Build and run from source
 
 1. Checkout this repository and install dependencies
 
