@@ -22,11 +22,11 @@ addons:
   apt:
     sources:
       - ubuntu-toolchain-r-test
-      - llvm-toolchain-precise-3.7
+#      - llvm-toolchain-precise-3.7
     packages:
       - libgnome-keyring-dev
       - icnsutils
-      - clang-3.7
+#      - clang-3.7
       - graphicsmagick
 
 before_install:
@@ -39,7 +39,7 @@ before_install:
 install:
 - nvm install 6
 - npm install npm -g
-- npm install electron-builder@next # force install next version to test electron-builder
+#- npm install electron-builder@next # force install next version to test electron-builder
 - npm install
 - npm prune
 
