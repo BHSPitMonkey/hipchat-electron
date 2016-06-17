@@ -8,9 +8,7 @@
   "license": "MIT",
   "main": "main.js",
   "dependencies": {
-    "electron-json-storage": "^2.0.0"
-  },
-  "devDependencies": {
+    "electron-json-storage": "^2.0.0",
     "open": "bhspitmonkey/node-open"
   }
 }
