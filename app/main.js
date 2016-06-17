@@ -10,6 +10,7 @@ const Menu = electron.Menu;
 const Tray = electron.Tray;
 const dialog = electron.dialog;
 const ipcMain = electron.ipcMain;
+const nativeImage = electron.nativeImage;
 
 const DEFAULT_CHAT_URL = "https://www.hipchat.com/chat";
 
@@ -20,6 +21,7 @@ let appIcon = null;
 let prefs = {};
 let forceQuit = false;
 let mentionCount = 0;
+let trayIconIsAlerting = false;
 
 // Set up tray icon images
 const iconPaths = {
@@ -37,7 +39,9 @@ const iconPaths = {
   },
 };
 let normalTrayIconPath = path.resolve(path.join(__dirname, (process.platform in iconPaths) ? iconPaths[process.platform].normal : iconPaths.default.normal));
+let normalTrayIconImage = nativeImage.createFromPath(normalTrayIconPath);
 let alertTrayIconPath  = path.resolve(path.join(__dirname, (process.platform in iconPaths) ? iconPaths[process.platform].alert : iconPaths.default.alert));
+let alertTrayIconImage = nativeImage.createFromPath(alertTrayIconPath);
 
 function showAndFocusWindow() {
     if (mainWindow) {
@@ -389,8 +393,12 @@ app.on('ready', function() {
 
     // Listen for unread channels from renderer process and update Tray accordingly
     ipcMain.on('unread-count', function(event, mentions) {
-      appIcon.setImage((mentions > 0) ? alertTrayIconPath : normalTrayIconPath);
+      let shouldAlert = (mentions > 0);
+      if (shouldAlert && !trayIconIsAlerting || !shouldAlert && trayIconIsAlerting) {
+        appIcon.setImage((shouldAlert) ? alertTrayIconImage : normalTrayIconImage)
+      }
       mentionCount = mentions;
+      trayIconIsAlerting = shouldAlert;
     });
   });
 });
