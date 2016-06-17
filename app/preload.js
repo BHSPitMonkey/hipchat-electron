@@ -1,9 +1,18 @@
-var electron = require('electron');
+const electron = require('electron');
 
+// Check for unread messages every n seconds and tell the main process
+function refreshMentionCount() {
+  let mentions = $('.hc-badge.hc-mention').size();
+  electron.ipcRenderer.send('unread-count', mentions);
+}
+setInterval(refreshMentionCount, 2000);
+
+// Handle zoom command from main process
 electron.ipcRenderer.on('zoom', function(event, message) {
     electron.webFrame.setZoomFactor(message);
 });
 
+// Handle jump-to-unread command from main process
 electron.ipcRenderer.on('jump-to-unread', function(event, message) {
     // Try to click a mention first
     let mentions = $('.hc-badge.hc-mention').size();
@@ -12,4 +21,6 @@ electron.ipcRenderer.on('jump-to-unread', function(event, message) {
     } else {
         $('.hc-badge').first().click();
     }
+
+    refreshMentionCount();
 });

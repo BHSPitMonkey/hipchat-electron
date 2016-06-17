@@ -3,7 +3,7 @@
   "productName": "HipChat Electron",
   "description": "An unofficial HipChat client based on the web client and Electron.",
   "author": "Stephen Eisenhauer <bhs2007@gmail.com> (http://stepheneisenhauer.com)",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "homepage": "https://github.com/BHSPitMonkey/hipchat-electron",
   "license": "MIT",
   "main": "main.js",

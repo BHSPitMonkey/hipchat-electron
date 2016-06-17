@@ -9,15 +9,35 @@ const BrowserWindow = electron.BrowserWindow;  // Module to create native browse
 const Menu = electron.Menu;
 const Tray = electron.Tray;
 const dialog = electron.dialog;
+const ipcMain = electron.ipcMain;
 
 const DEFAULT_CHAT_URL = "https://www.hipchat.com/chat";
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-var mainWindow = null;
-var appIcon = null;
-var prefs = {};
-var forceQuit = false;
+let mainWindow = null;
+let appIcon = null;
+let prefs = {};
+let forceQuit = false;
+let mentionCount = 0;
+
+// Set up tray icon images
+const iconPaths = {
+  linux: {
+    normal: 'images/64x64/hipchat-mono.png',
+    alert: 'images/64x64/hipchat-mono-alert.png',
+  },
+  win32: {
+    normal: 'images/16x16/hipchat.png',
+    alert: 'images/16x16/hipchat-alert.png',
+  },
+  default: {
+    normal: 'images/64x64/hipchat-color.png',
+    alert: 'images/64x64/hipchat-color-alert.png',
+  },
+};
+let normalTrayIconPath = path.resolve(path.join(__dirname, (process.platform in iconPaths) ? iconPaths[process.platform].normal : iconPaths.default.normal));
+let alertTrayIconPath  = path.resolve(path.join(__dirname, (process.platform in iconPaths) ? iconPaths[process.platform].alert : iconPaths.default.alert));
 
 function showAndFocusWindow() {
     if (mainWindow) {
@@ -335,19 +355,7 @@ app.on('ready', function() {
       mainWindow = null;
     });
 
-    // Set up tray icon
-    var iconPath;
-    switch (process.platform) {
-      case 'linux':
-        iconPath = 'images/64x64/hipchat-mono.png';
-        break;
-      case 'win32':
-        iconPath = 'images/16x16/hipchat.png';
-        break;
-      default:
-        iconPath = 'images/64x64/hipchat-color.png';
-    }
-    appIcon = new Tray(path.resolve(path.join(__dirname, iconPath)));
+    appIcon = new Tray(normalTrayIconPath);
     var contextMenu = Menu.buildFromTemplate([
       { label: 'Show HipChat', type: 'normal', click: showAndFocusWindow },
       { type: 'separator' },
@@ -360,7 +368,12 @@ app.on('ready', function() {
     ]);
     appIcon.setToolTip('HipChat');
     appIcon.setContextMenu(contextMenu);
-    appIcon.on('double-click', toggleWindowFocus);
+    appIcon.on('click', () => {
+      if (mentionCount > 0) goToUnread();
+    });
+    appIcon.on('double-click', () => {
+      (mentionCount > 0) ? goToUnread() : toggleWindowFocus();
+    });
 
     // Set up Windows app actions
     if (app.hasOwnProperty('setUserTasks')) {
@@ -373,5 +386,11 @@ app.on('ready', function() {
         description: 'Join a room or start a private conversation'
       }]);
     }
+
+    // Listen for unread channels from renderer process and update Tray accordingly
+    ipcMain.on('unread-count', function(event, mentions) {
+      appIcon.setImage((mentions > 0) ? alertTrayIconPath : normalTrayIconPath);
+      mentionCount = mentions;
+    });
   });
 });
