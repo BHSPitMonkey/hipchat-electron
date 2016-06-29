@@ -135,6 +135,11 @@ app.on('ready', function() {
         mainWindow.webContents.send('jump-to-unread');
     }
 
+    // Close the currently active room or chat
+    function closeRoom() {
+        mainWindow.webContents.send('close-room');
+    }
+
     // Spawn a new chat
     function newChat() {
         showAndFocusWindow();
@@ -215,6 +220,7 @@ app.on('ready', function() {
             { label: "New Chat", accelerator: 'CmdOrCtrl+N', click: newChat },
             { label: "Invite to Room", click: function() { sendKeyboardShortcut('I', true); } },
             { label: "Go To Unread Message", accelerator: 'CmdOrCtrl+G', click: goToUnread },
+            { label: "Close Room", accelerator: 'CmdOrCtrl+W', click: closeRoom },
             { label: "Previous Room", visible: false, accelerator: 'CmdOrCtrl+PageUp', click: function() { sendKeyboardShortcut('Up', true, true); } },
             { label: "Previous Room", visible: false, accelerator: 'CmdOrCtrl+Shift+Tab', click: function() { sendKeyboardShortcut('Up', true, true); } },
             { label: "Next Room", visible: false, accelerator: 'CmdOrCtrl+PageDown', click: function() { sendKeyboardShortcut('Down', true, true); } },
@@ -316,7 +322,6 @@ app.on('ready', function() {
           },
           {
             label: 'Close',
-            accelerator: 'CmdOrCtrl+W',
             role: 'close'
           },
         ]

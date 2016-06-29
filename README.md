@@ -27,6 +27,7 @@ Downloads are available on the [Releases](https://github.com/BHSPitMonkey/hipcha
 * `Ctrl`+`N`: Start a new chat
 * `Ctrl`+`PgUp`: Navigate up one room
 * `Ctrl`+`PgDn`: Navigate down one room
+* `Ctrl`+`W`: Close the active conversation
 * `Ctrl`+`G`: Go to next room with unread messages
 * `Ctrl`+`Q`: Quit application
 

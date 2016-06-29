@@ -24,3 +24,9 @@ electron.ipcRenderer.on('jump-to-unread', function(event, message) {
 
     refreshMentionCount();
 });
+
+// Handle close-room command from main process
+electron.ipcRenderer.on('close-room', function(event, message) {
+    // Click the close icon in the selected nav entry
+    $('.aui-nav-selected').find('.hc-close-icon').click()
+});
